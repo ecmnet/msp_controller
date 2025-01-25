@@ -1,0 +1,66 @@
+
+#include <msp_controller/msp_status_manager.hpp>
+#include <rclcpp/rclcpp.hpp>
+#include <asio.hpp>
+#include <lquac/mavlink.h>
+#include <msp_controller/msp_px4.h>
+
+using namespace msp;
+
+void MspStatusManager::onMessageReceived(mavlink_message_t msg)
+{
+  mavlink_heartbeat_t hb;
+  mavlink_msg_heartbeat_decode(&msg, &hb);
+  switch (msg.sysid)
+  {
+    case PX4_SYSID:
+    
+      if(!px4_connected)
+       initializePX4();
+
+      px4_connect_tms = dispatcher->getRos2TimeMs();
+      px4_connected = true;
+      break;
+    case GCL_SYSID:
+      gcl_connect_tms = dispatcher->getRos2TimeMs();
+      gcl_connected = true;
+      break;
+    // TODO add more components
+  }
+}
+
+void MspStatusManager::checkTimeOut()
+{
+  uint64_t now = dispatcher->getRos2TimeMs();
+
+  if (px4_connected && (now - px4_connect_tms) > 1500)
+  {
+    RCLCPP_ERROR(dispatcher->getRos2Node()->get_logger(), "MSP lost PX4 connection");
+    px4_connected = false;
+  
+  }
+
+  if (gcl_connected && (now - gcl_connect_tms) > 1500)
+  {
+    RCLCPP_ERROR(dispatcher->getRos2Node()->get_logger(), "MSP lost GCL connection");
+    gcl_connected = false;
+    if(px4_connected) {
+    ; //TODO: Action? Land Loiter?
+    }
+  }
+}
+
+void MspStatusManager::initializePX4() {
+
+  // disable some streams
+   dispatcher->sendMavlinkCommand( MAV_CMD_SET_MESSAGE_INTERVAL, MAVLINK_MSG_ID_ESC_INFO, -1);
+   dispatcher->sendMavlinkCommand( MAV_CMD_SET_MESSAGE_INTERVAL, MAVLINK_MSG_ID_SCALED_PRESSURE, -1);
+
+  // set rates for some streams
+  dispatcher->sendMavlinkCommand( MAV_CMD_SET_MESSAGE_INTERVAL, MAVLINK_MSG_ID_LOCAL_POSITION_NED, 12500);
+  dispatcher->sendMavlinkCommand( MAV_CMD_SET_MESSAGE_INTERVAL, MAVLINK_MSG_ID_POSITION_TARGET_LOCAL_NED, 25000);
+  dispatcher->sendMavlinkCommand( MAV_CMD_SET_MESSAGE_INTERVAL, MAVLINK_MSG_ID_ESTIMATOR_STATUS, 50000);
+
+  RCLCPP_INFO(dispatcher->getRos2Node()->get_logger(), "PX4 setup performed");
+
+}
