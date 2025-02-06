@@ -8,10 +8,10 @@
 namespace msp
 {
 
-class MspAttitudePublisher : public msp::MavlinkMessageListener
+class MspAttitudeQuaternionPublisher : public msp::MavlinkMessageListener
 {
 public:
-  explicit MspAttitudePublisher(rclcpp::Node* node) : ros2Node(node)
+  explicit MspAttitudeQuaternionPublisher(rclcpp::Node* node) : ros2Node(node)
   {
     rmw_qos_profile_t qos_profile = rmw_qos_profile_sensor_data;
     auto qos = rclcpp::QoS(rclcpp::QoSInitialization(qos_profile.history, 5), qos_profile);
@@ -29,6 +29,11 @@ public:
     message.q[1] = att.q2;
     message.q[2] = att.q3;
     message.q[3] = att.q4;
+
+    MavlinkMessageListener::model.vehicle_attitude[0] = att.q1;
+    MavlinkMessageListener::model.vehicle_attitude[1] = att.q2;
+    MavlinkMessageListener::model.vehicle_attitude[2] = att.q3;
+    MavlinkMessageListener::model.vehicle_attitude[3] = att.q4;
 
     message.timestamp = ros2Node->get_clock()->now().nanoseconds() / 1000L;
     message.timestamp_sample = att.time_boot_ms;

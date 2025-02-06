@@ -16,8 +16,11 @@ namespace msp
  * the flight controller both via the MSP Controller node
  */
 
+
 class MSPNodeBase : public rclcpp::Node
 {
+
+
 public:
   explicit MSPNodeBase(std::string nodeName, uint8_t component_id) : Node(nodeName)
   {
@@ -70,7 +73,7 @@ public:
   virtual rclcpp::QoS getQos()
   {
     rmw_qos_profile_t qos_profile = rmw_qos_profile_sensor_data;
-    return rclcpp::QoS(rclcpp::QoSInitialization(qos_profile.history, 5), qos_profile);
+    return rclcpp::QoS(rclcpp::QoSInitialization(qos_profile.history, 1), qos_profile);
   }
 
   void send_heartbeat()

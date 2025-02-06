@@ -7,7 +7,7 @@ if(NOT CMAKE_CXX_STANDARD)
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  add_compile_options(-Wall -Wextra -Wpedantic -Wno-address-of-packed-member )
+  add_compile_options(-Wall -Wextra -Wpedantic -Wno-address-of-packed-member -O2 )
 endif()
 
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
@@ -20,6 +20,7 @@ find_package(builtin_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(px4_msgs REQUIRED)
 find_package(msp_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
 
 #find_package(Boost REQUIRED thread)
 #find_package(eigen3_cmake_module REQUIRED)
@@ -31,7 +32,7 @@ add_executable(msp_controller src/msp_controller.cpp
                               src/msp_time_sync.cpp
                               src/msp_status_manager.cpp
                               )
-ament_target_dependencies(msp_controller rclcpp px4_msgs msp_msgs )
+ament_target_dependencies(msp_controller rclcpp px4_msgs msp_msgs geometry_msgs )
 
 target_link_libraries(msp_controller pthread )
 

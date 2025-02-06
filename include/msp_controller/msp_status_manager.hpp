@@ -5,8 +5,8 @@
 #include <msp_controller/msp_mavlink_listener.hpp>
 #include <msp_controller/msp_mavlink_dispatcher.hpp>
 
-#define GCL_TIMEOUT_US 2000000L;
-#define PX4_TIMEOUT_US 2000000L;
+#define GCL_TIMEOUT_MS 1500
+#define PX4_TIMEOUT_MS 1500
 
 namespace msp
 {
