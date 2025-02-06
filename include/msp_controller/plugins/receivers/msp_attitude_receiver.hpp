@@ -9,8 +9,9 @@ namespace msp
 class MspAttitudeReceiver : public msp::MavlinkMessageListener
 {
 public:
-  explicit MspAttitudeReceiver(rclcpp::Node* node) : ros2Node(node)
+  explicit MspAttitudeReceiver(rclcpp::Node* node,msp::MspMavlinkDispatcher* dispatcher): ros2Node(node), dispatcher_(dispatcher)
   {
+    dispatcher->addListener(MAVLINK_MSG_ID_ATTITUDE,this);
   }
 
   void onMessageReceived(mavlink_message_t msg) override
@@ -23,7 +24,8 @@ public:
   }
 
 private:
-  rclcpp::Node* ros2Node;
+ rclcpp::Node* ros2Node;
+msp::MspMavlinkDispatcher* dispatcher_;
 };
 
 }  // namespace msp

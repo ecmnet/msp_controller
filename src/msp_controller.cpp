@@ -8,6 +8,8 @@
 #include <lquac/mavlink.h>
 
 #include <msp_controller/plugins/receivers/msp_attitude_receiver.hpp>
+#include <msp_controller/plugins/receivers/msp_trajectory_waypoint_receiver.hpp>
+
 
 #include <msp_controller/plugins/publisher/msp_local_position_publisher.hpp>
 #include <msp_controller/plugins/publisher/msp_target_local_position_publisher.hpp>
@@ -33,18 +35,6 @@ public:
 
   {
     RCLCPP_INFO(this->get_logger(), "MSP Controller Endpoint Node started");
-
-    dispatcher.addListener(MAVLINK_MSG_ID_ATTITUDE,                       &r01 );
-
-    dispatcher.addListener(MAVLINK_MSG_ID_LOCAL_POSITION_NED,             &p01 );
-    dispatcher.addListener(MAVLINK_MSG_ID_ATTITUDE_QUATERNION,            &p02 );
-    dispatcher.addListener(MAVLINK_MSG_ID_HEARTBEAT,                      &p03 );
-    dispatcher.addListener(MAVLINK_MSG_ID_BATTERY_STATUS,                 &p04 );
-    dispatcher.addListener(MAVLINK_MSG_ID_POSITION_TARGET_LOCAL_NED,      &p05 );
-    dispatcher.addListener(MAVLINK_MSG_ID_HIGHRES_IMU,                    &p06 );
-    dispatcher.addListener(MAVLINK_MSG_ID_LOCAL_POSITION_NED,             &p07 );
-
-    dispatcher.addListener(MAVLINK_MSG_ID_MSP_COMMAND,                    &c01 );
     dispatcher.start();
     
   }
@@ -56,17 +46,18 @@ private:
   msp::MspTimeSync          timesync;
   msp::MspStatusManager     status_manager;
 
-  msp::MspAttitudeReceiver             r01 = msp::MspAttitudeReceiver(this);    
+  msp::MspAttitudeReceiver             r01 = msp::MspAttitudeReceiver(this,&dispatcher);    
+  msp::MspTrajectoryWaypointReceiver   r02 = msp::MspTrajectoryWaypointReceiver(this,&dispatcher);
 
-  msp::MspLocalPositionPublisher       p01 = msp::MspLocalPositionPublisher(this);
-  msp::MspAttitudeQuaternionPublisher  p02 = msp::MspAttitudeQuaternionPublisher(this);
-  msp::MspVehicleStatusPublisher       p03 = msp::MspVehicleStatusPublisher(this);
-  msp::MspBatteryStatusPublisher       p04 = msp::MspBatteryStatusPublisher(this);
-  msp::MspTargetLocalPositionPublisher p05 = msp::MspTargetLocalPositionPublisher(this);
-  msp::MspSensorCombinedPublisher      p06 = msp::MspSensorCombinedPublisher(this);
-  msp::MspPoseStampedPublisher         p07 = msp::MspPoseStampedPublisher(this);
+  msp::MspLocalPositionPublisher       p01 = msp::MspLocalPositionPublisher(this,&dispatcher);
+  msp::MspAttitudeQuaternionPublisher  p02 = msp::MspAttitudeQuaternionPublisher(this,&dispatcher);
+  msp::MspVehicleStatusPublisher       p03 = msp::MspVehicleStatusPublisher(this,&dispatcher);
+  msp::MspBatteryStatusPublisher       p04 = msp::MspBatteryStatusPublisher(this,&dispatcher);
+  msp::MspTargetLocalPositionPublisher p05 = msp::MspTargetLocalPositionPublisher(this,&dispatcher);
+  msp::MspSensorCombinedPublisher      p06 = msp::MspSensorCombinedPublisher(this,&dispatcher);
+  msp::MspPoseStampedPublisher         p07 = msp::MspPoseStampedPublisher(this,&dispatcher);
 
-  msp::MspMspCommandClient             c01 = msp::MspMspCommandClient(this);
+  msp::MspMspCommandClient             c01 = msp::MspMspCommandClient(this,&dispatcher);
 
   msp::MspOffboardSetpointSubscriber   s01 = msp::MspOffboardSetpointSubscriber(&dispatcher);
   msp::MspMessageSubscriber            s02 = msp::MspMessageSubscriber(&dispatcher);

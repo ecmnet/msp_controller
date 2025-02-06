@@ -11,8 +11,10 @@ namespace msp
 class MspBatteryStatusPublisher : public msp::MavlinkMessageListener
 {
 public:
-  explicit MspBatteryStatusPublisher(rclcpp::Node* node) : ros2Node(node)
+  explicit MspBatteryStatusPublisher(rclcpp::Node* node,msp::MspMavlinkDispatcher* dispatcher) : ros2Node(node), dispatcher_(dispatcher)
   {
+    dispatcher_->addListener(MAVLINK_MSG_ID_BATTERY_STATUS,this);
+    
     rmw_qos_profile_t qos_profile = rmw_qos_profile_sensor_data;
     auto qos = rclcpp::QoS(rclcpp::QoSInitialization(qos_profile.history, 5), qos_profile);
     px4_publisher = ros2Node->create_publisher<px4_msgs::msg::BatteryStatus>("/msp/out/battery_status", qos);
@@ -41,6 +43,8 @@ public:
 private: 
   rclcpp::Publisher<px4_msgs::msg::BatteryStatus>::SharedPtr px4_publisher;
   rclcpp::Node* ros2Node;
+  msp::MspMavlinkDispatcher* dispatcher_;
+ 
 };
 
 }  // namespace msp

@@ -14,8 +14,10 @@ namespace msp
 class MspVehicleStatusPublisher : public msp::MavlinkMessageListener
 {
 public:
-  explicit MspVehicleStatusPublisher(rclcpp::Node* node) : ros2Node(node)
+  explicit MspVehicleStatusPublisher(rclcpp::Node* node,msp::MspMavlinkDispatcher* dispatcher) : ros2Node(node), dispatcher_(dispatcher)
   {
+    dispatcher_->addListener(MAVLINK_MSG_ID_HEARTBEAT,this);
+
     rmw_qos_profile_t qos_profile = rmw_qos_profile_sensor_data;
     auto qos = rclcpp::QoS(rclcpp::QoSInitialization(qos_profile.history, 5), qos_profile);
     px4_publisher = ros2Node->create_publisher<px4_msgs::msg::VehicleStatus>("/msp/out/vehicle_status", qos);
@@ -78,6 +80,7 @@ public:
 private:
   rclcpp::Publisher<px4_msgs::msg::VehicleStatus>::SharedPtr px4_publisher;
   rclcpp::Node* ros2Node;
+  msp::MspMavlinkDispatcher* dispatcher_;
 
   uint64_t time_armed = 0;
 

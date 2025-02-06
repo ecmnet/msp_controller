@@ -11,11 +11,14 @@ namespace msp
   class MspLocalPositionPublisher : public msp::MavlinkMessageListener
   {
   public:
-    explicit MspLocalPositionPublisher(rclcpp::Node *node) : ros2Node(node)
+    explicit MspLocalPositionPublisher(rclcpp::Node* node,msp::MspMavlinkDispatcher* dispatcher) : ros2Node(node), dispatcher_(dispatcher)
     {
+      dispatcher_->addListener(MAVLINK_MSG_ID_LOCAL_POSITION_NED,this );
+
       rmw_qos_profile_t qos_profile = rmw_qos_profile_sensor_data;
       auto qos = rclcpp::QoS(rclcpp::QoSInitialization(qos_profile.history, 5), qos_profile);
       px4_publisher = ros2Node->create_publisher<px4_msgs::msg::VehicleLocalPosition>("/msp/out/vehicle_local_position", qos);
+     
     }
 
     void onMessageReceived(mavlink_message_t msg) override
@@ -55,13 +58,13 @@ namespace msp
 
       px4_publisher->publish(message);
       
-      last_message = message;
     }
 
   private:
     rclcpp::Publisher<px4_msgs::msg::VehicleLocalPosition>::SharedPtr px4_publisher;
-    rclcpp::Node *ros2Node;
-    px4_msgs::msg::VehicleLocalPosition last_message;
+    rclcpp::Node* ros2Node;
+   msp::MspMavlinkDispatcher* dispatcher_;
+    
   };
 
 } // namespace msp

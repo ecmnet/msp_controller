@@ -10,8 +10,9 @@ namespace msp
 class MspMspCommandClient : public msp::MavlinkMessageListener
 {
 public:
-  explicit MspMspCommandClient(rclcpp::Node* node) : ros2Node(node)
+  explicit MspMspCommandClient(rclcpp::Node* node,msp::MspMavlinkDispatcher* dispatcher): ros2Node(node), dispatcher_(dispatcher)
   {
+    dispatcher_->addListener(MAVLINK_MSG_ID_MSP_COMMAND,this);
     msp_command_client = ros2Node->create_client<px4_msgs::srv::VehicleCommand>("/msp/in/vehicle_command");
   }
 
@@ -39,6 +40,7 @@ public:
 
 private:
   rclcpp::Node* ros2Node;
+  msp::MspMavlinkDispatcher* dispatcher_;
   rclcpp::Client<px4_msgs::srv::VehicleCommand>::SharedPtr msp_command_client;
 
 };

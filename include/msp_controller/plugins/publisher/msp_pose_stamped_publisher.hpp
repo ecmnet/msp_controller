@@ -11,8 +11,10 @@ namespace msp
   class MspPoseStampedPublisher : public msp::MavlinkMessageListener
   {
   public:
-    explicit MspPoseStampedPublisher(rclcpp::Node *node) : ros2Node(node)
+    explicit MspPoseStampedPublisher(rclcpp::Node* node,msp::MspMavlinkDispatcher* dispatcher): ros2Node(node), dispatcher_(dispatcher)
     {
+      dispatcher_->addListener(MAVLINK_MSG_ID_LOCAL_POSITION_NED,this);
+      
       px4_publisher = ros2Node->create_publisher<geometry_msgs::msg::PoseStamped>("/msp/out/pose", 1);
     }
 
@@ -31,7 +33,7 @@ namespace msp
       message.pose.orientation.w = MavlinkMessageListener::model.vehicle_attitude[0];
       message.pose.orientation.x = MavlinkMessageListener::model.vehicle_attitude[1];
       message.pose.orientation.y = MavlinkMessageListener::model.vehicle_attitude[2];
-      message.pose.orientation.z = MavlinkMessageListener::model.vehicle_attitude[3];
+      message.pose.orientation.z = -MavlinkMessageListener::model.vehicle_attitude[3];
 
       message.header.stamp = ros2Node->get_clock()->now();
       message.header.frame_id = "world"; 
@@ -42,7 +44,8 @@ namespace msp
 
   private:
     rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr px4_publisher;
-    rclcpp::Node *ros2Node;
+    rclcpp::Node* ros2Node;
+    msp::MspMavlinkDispatcher* dispatcher_;
    
   };
 

@@ -1,6 +1,8 @@
 #pragma once
 #include <lquac/mavlink.h>
 
+
+
 namespace msp
 {
 
@@ -12,11 +14,15 @@ namespace msp
 
     class MavlinkMessageListener
     {
+
     public:
+       
+
         virtual ~MavlinkMessageListener() = default;
         virtual void onMessageReceived(mavlink_message_t msg) = 0;
 
         static msp::DataModel model;
+
     };
 
 }

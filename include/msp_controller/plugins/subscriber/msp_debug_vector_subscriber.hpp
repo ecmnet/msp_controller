@@ -34,6 +34,7 @@ namespace msp
   private:
     rclcpp::Subscription<px4_msgs::msg::DebugVect>::SharedPtr subscription;
     msp::MspMavlinkDispatcher *dispatcher;
+  
   };
 
 }
