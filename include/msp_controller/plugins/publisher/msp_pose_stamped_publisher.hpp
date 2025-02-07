@@ -26,7 +26,7 @@ namespace msp
       auto message = geometry_msgs::msg::PoseStamped();
 
       message.pose.position.x =  ned.x;
-      message.pose.position.y =  ned.y;
+      message.pose.position.y = -ned.y;
       message.pose.position.z = -ned.z;
 
       // TODO: Orientation does not work properly

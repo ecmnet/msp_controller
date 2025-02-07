@@ -25,7 +25,7 @@ void MspMavlinkDispatcher::start()
   io_thread = std::thread([this]()
                           { io_service.run(); });
 
-  RCLCPP_INFO(ros2Node->get_logger(), "MSP Controller dispatcher started");
+  RCLCPP_INFO(ros2Node->get_logger(), "MSP Controller dispatcher started %i listeners",mavlinkMessageListeners.size());
 }
 
 bool MspMavlinkDispatcher::sendMavlinkMessage(mavlink_message_t &msg)
@@ -114,11 +114,11 @@ void MspMavlinkDispatcher::send_heartbeat()
   mavlink_message_t msg;
 
   mavlink_msg_heartbeat_pack(2, MAV_COMP_ID_ONBOARD_COMPUTER, &msg,
-                             MAV_TYPE_QUADROTOR,    // Vehicle type
-                             MAV_AUTOPILOT_GENERIC, // Autopilot type
-                             0,                     // Base mode
-                             0,                     // Custom mode
-                             this->msp_state        // System state
+                             MAV_TYPE_QUADROTOR,           // Vehicle type
+                             MAV_TYPE_ONBOARD_CONTROLLER , // Autopilot type
+                             0,                            // Base mode
+                             0,                            // Custom mode
+                             this->msp_state               // System state
   );
   this->sendMavlinkMessage(msg);
 }

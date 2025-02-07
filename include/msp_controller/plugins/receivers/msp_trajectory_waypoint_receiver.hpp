@@ -2,6 +2,7 @@
 #include <msp_controller/msp_mavlink_listener.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <lquac/mavlink.h>
+#include <msp_controller/msp_px4.h>
 
 namespace msp
 {
@@ -19,7 +20,8 @@ public:
     mavlink_trajectory_representation_waypoints_t traj;
     mavlink_msg_trajectory_representation_waypoints_decode(&msg, &traj);
 
-    dispatcher_->sendMavlinkMessage(msg);
+   mavlink_msg_trajectory_representation_waypoints_encode(PX4_SYSID,MAVLINK_MSG_ID_TRAJECTORY_REPRESENTATION_WAYPOINTS, &msg, &traj);
+   dispatcher_->sendMavlinkMessage(msg);
 
 
   }

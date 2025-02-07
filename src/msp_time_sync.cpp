@@ -62,7 +62,7 @@ void MspTimeSync::add_timesync_observation(uint64_t offset_ns, uint64_t local_ti
       high_deviation_count++;
       if (high_deviation_count > MAX_CONS_HIGH_DEVIATION)
       {
-        RCLCPP_WARN(dispatcher->getRos2Node()->get_logger(), "Time jump detected. Resetting the time synchronizer");
+        //RCLCPP_WARN(dispatcher->getRos2Node()->get_logger(), "Time jump detected. Resetting the time synchronizer");
         dispatcher->setTimeOffset(0);
         reset_filter();
       }

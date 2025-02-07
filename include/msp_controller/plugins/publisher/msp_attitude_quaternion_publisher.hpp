@@ -24,7 +24,7 @@ public:
   {
     mavlink_attitude_quaternion_t att;
     mavlink_msg_attitude_quaternion_decode(&msg, &att);
-
+    
     auto message = px4_msgs::msg::VehicleAttitude();
 
     message.q[0] = att.q1;
