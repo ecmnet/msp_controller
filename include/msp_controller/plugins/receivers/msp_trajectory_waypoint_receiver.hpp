@@ -19,9 +19,12 @@ public:
   {
     mavlink_trajectory_representation_waypoints_t traj;
     mavlink_msg_trajectory_representation_waypoints_decode(&msg, &traj);
+    
+    traj.time_usec = ros2Node->get_clock()->now().nanoseconds() / 1000;
 
-   mavlink_msg_trajectory_representation_waypoints_encode(PX4_SYSID,MAVLINK_MSG_ID_TRAJECTORY_REPRESENTATION_WAYPOINTS, &msg, &traj);
-   dispatcher_->sendMavlinkMessage(msg);
+    mavlink_message_t reply_msg;
+    mavlink_msg_trajectory_representation_waypoints_encode(2,196, &reply_msg, &traj);
+    dispatcher_->sendMavlinkMessage(reply_msg);
 
 
   }

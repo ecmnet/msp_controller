@@ -1,6 +1,6 @@
 #pragma once
 #include <lquac/mavlink.h>
-
+#include <Eigen/Geometry>
 
 
 namespace msp
@@ -8,7 +8,7 @@ namespace msp
 
     struct DataModel
     {
-        std::array<float, 4> vehicle_attitude;
+        Eigen::Vector3f      position;
         float                yaw_speed;
     };
 

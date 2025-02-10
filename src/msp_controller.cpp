@@ -13,8 +13,7 @@
 
 #include <msp_controller/plugins/publisher/msp_local_position_publisher.hpp>
 #include <msp_controller/plugins/publisher/msp_target_local_position_publisher.hpp>
-#include <msp_controller/plugins/publisher/msp_pose_stamped_publisher.hpp>
-#include <msp_controller/plugins/publisher/msp_attitude_quaternion_publisher.hpp>
+
 #include <msp_controller/plugins/publisher/msp_vehicle_status_publisher.hpp>
 #include <msp_controller/plugins/publisher/msp_battery_status_publisher.hpp>
 #include <msp_controller/plugins/publisher/msp_sensor_combined_publisher.hpp>
@@ -23,9 +22,12 @@
 
 #include <msp_controller/plugins/subscriber/msp_offboard_setpoint_subscriber.hpp>
 #include <msp_controller/plugins/subscriber/msp_message_subscriber.hpp>
+#include <msp_controller/plugins/subscriber/msp_obstacle_distance_subscriber.hpp>
 #include <msp_controller/plugins/subscriber/msp_heartbeat_subscriber.hpp>
 #include <msp_controller/plugins/subscriber/msp_trajectory_subscriber.hpp>
 #include <msp_controller/plugins/subscriber/msp_debug_vector_subscriber.hpp>
+
+#include <msp_controller/plugins/tf/msp_body_frame_broadcaster.hpp>
 
 
 class MavlinkEndpointNode : public rclcpp::Node
@@ -34,6 +36,7 @@ public:
    MavlinkEndpointNode() : Node("MSPController"), dispatcher( this ), timesync( &dispatcher ), status_manager( &dispatcher )
 
   {
+
     RCLCPP_INFO(this->get_logger(), "MSP Controller Endpoint Node started");
     dispatcher.start();
     
@@ -46,16 +49,16 @@ private:
   msp::MspTimeSync          timesync;
   msp::MspStatusManager     status_manager;
 
+  msp::MspBodyFrameBroadcaster         t01 = msp::MspBodyFrameBroadcaster(this,&dispatcher);
+
   msp::MspAttitudeReceiver             r01 = msp::MspAttitudeReceiver(this,&dispatcher);    
   msp::MspTrajectoryWaypointReceiver   r02 = msp::MspTrajectoryWaypointReceiver(this,&dispatcher);
 
   msp::MspLocalPositionPublisher       p01 = msp::MspLocalPositionPublisher(this,&dispatcher);
-  msp::MspAttitudeQuaternionPublisher  p02 = msp::MspAttitudeQuaternionPublisher(this,&dispatcher);
   msp::MspVehicleStatusPublisher       p03 = msp::MspVehicleStatusPublisher(this,&dispatcher);
   msp::MspBatteryStatusPublisher       p04 = msp::MspBatteryStatusPublisher(this,&dispatcher);
   msp::MspTargetLocalPositionPublisher p05 = msp::MspTargetLocalPositionPublisher(this,&dispatcher);
   msp::MspSensorCombinedPublisher      p06 = msp::MspSensorCombinedPublisher(this,&dispatcher);
-  msp::MspPoseStampedPublisher         p07 = msp::MspPoseStampedPublisher(this,&dispatcher);
 
   msp::MspMspCommandClient             c01 = msp::MspMspCommandClient(this,&dispatcher);
 
@@ -64,6 +67,8 @@ private:
   msp::MspHeartbeatSubscriber          s03 = msp::MspHeartbeatSubscriber(&dispatcher);
   msp::MspTrajectorySubscriber         s04 = msp::MspTrajectorySubscriber(&dispatcher);
   msp::MspDebugVectorSubscriber        s05 = msp::MspDebugVectorSubscriber(&dispatcher);
+  msp::MspObstacleDistanceSubscriber   s06 = msp::MspObstacleDistanceSubscriber(&dispatcher);
+
     
 
 };

@@ -56,6 +56,11 @@ namespace msp
       message.timestamp = ros2Node->get_clock()->now().nanoseconds() / 1000L;
       message.timestamp_sample = ned.time_boot_ms;
 
+      MavlinkMessageListener::model.position.x() =  ned.x;
+      MavlinkMessageListener::model.position.y() =  ned.y;
+      MavlinkMessageListener::model.position.z() =  ned.z;
+    
+
       px4_publisher->publish(message);
       
     }

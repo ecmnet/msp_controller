@@ -19,15 +19,15 @@ public:
       {
         mavlink_message_t msg;
         mavlink_msg_heartbeat_pack(message->system_id, message->component_id, &msg,
-                                   MAV_TYPE_QUADROTOR,     // Vehicle type
-                                   MAV_AUTOPILOT_GENERIC,  // Autopilot type
+                                   MAV_TYPE::MAV_TYPE_ONBOARD_CONTROLLER,             
+                                   MAV_AUTOPILOT::MAV_AUTOPILOT_PX4,                  
                                    0,                      // Base mode
                                    0,                      // Custom mode
                                    message->system_status  // System state
         );
-        this->dispatcher->sendMavlinkMessage(msg); });
-    
+        this->dispatcher->sendMavlinkMessage(msg); 
         
+        });   
   }
 
 

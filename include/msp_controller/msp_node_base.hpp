@@ -33,7 +33,7 @@ public:
         "/msp/in/vehicle_command",
         std::bind(&MSPNodeBase::receive_msp_command, this, std::placeholders::_1, std::placeholders::_2));
 
-    hb_timer = this->create_wall_timer(std::chrono::milliseconds(2000), std::bind(&MSPNodeBase::send_heartbeat, this));
+    hb_timer = this->create_wall_timer(std::chrono::milliseconds(500), std::bind(&MSPNodeBase::send_heartbeat, this));
   }
 
   void setStatus(uint8_t state ) {

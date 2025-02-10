@@ -70,7 +70,7 @@ private:
 
   std::multimap<uint16_t,msp::MavlinkMessageListener*> mavlinkMessageListeners;
 
-  uint8_t  msp_state = MAV_STATE_BOOT;
+  uint8_t  msp_state = MAV_STATE_ACTIVE;
   double   time_offset = 0;
 
 

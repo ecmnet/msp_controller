@@ -113,13 +113,16 @@ void MspMavlinkDispatcher::send_heartbeat()
 {
   mavlink_message_t msg;
 
-  mavlink_msg_heartbeat_pack(2, MAV_COMP_ID_ONBOARD_COMPUTER, &msg,
-                             MAV_TYPE_QUADROTOR,           // Vehicle type
-                             MAV_TYPE_ONBOARD_CONTROLLER , // Autopilot type
-                             0,                            // Base mode
-                             0,                            // Custom mode
-                             this->msp_state               // System state
+  mavlink_msg_heartbeat_pack(MSP_SYSID,
+                             MAV_COMPONENT::MAV_COMP_ID_ONBOARD_COMPUTER, 
+                             &msg,
+                             MAV_TYPE::MAV_TYPE_ONBOARD_CONTROLLER,             // Type
+                             MAV_AUTOPILOT::MAV_AUTOPILOT_PX4,                  // Autopilot type
+                             0,                                                 // Base mode
+                             0,                                                 // Custom mode
+                             this->msp_state                                    // System state
   );
+
   this->sendMavlinkMessage(msg);
 }
 
