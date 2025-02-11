@@ -7,9 +7,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <lquac/mavlink.h>
 
-#include <msp_controller/plugins/receivers/msp_attitude_receiver.hpp>
 #include <msp_controller/plugins/receivers/msp_trajectory_waypoint_receiver.hpp>
-
 
 #include <msp_controller/plugins/publisher/msp_local_position_publisher.hpp>
 #include <msp_controller/plugins/publisher/msp_target_local_position_publisher.hpp>
@@ -51,7 +49,6 @@ private:
 
   msp::MspBodyFrameBroadcaster         t01 = msp::MspBodyFrameBroadcaster(this,&dispatcher);
 
-  msp::MspAttitudeReceiver             r01 = msp::MspAttitudeReceiver(this,&dispatcher);    
   msp::MspTrajectoryWaypointReceiver   r02 = msp::MspTrajectoryWaypointReceiver(this,&dispatcher);
 
   msp::MspLocalPositionPublisher       p01 = msp::MspLocalPositionPublisher(this,&dispatcher);

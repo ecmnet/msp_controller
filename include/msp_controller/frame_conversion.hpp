@@ -10,11 +10,9 @@
  */
 
  #pragma once
-
  #include <Eigen/Eigen>
- //#include <px4_ros2/utils/geometry.hpp>
  
- namespace px4_ros2
+ namespace msp
  {
  /** \ingroup frame_conversion
   *  @{
@@ -183,6 +181,16 @@
  static inline Eigen::Matrix<T, 3, 1> varianceEnuToNed(const Eigen::Matrix<T, 3, 1> & v_enu)
  {
    return {v_enu.y(), v_enu.x(), v_enu.z()};
+ }
+ template<typename Type>
+ Eigen::Quaternion<Type> quaternion_from_rpy(const Eigen::Matrix<Type, 3, 1>& rpy)
+ {
+   // YPR - ZYX
+   return Eigen::Quaternion<Type>(
+     Eigen::AngleAxis<Type>(rpy.z(), Eigen::Matrix<Type, 3, 1>::UnitZ()) *
+     Eigen::AngleAxis<Type>(rpy.y(), Eigen::Matrix<Type, 3, 1>::UnitY()) *
+     Eigen::AngleAxis<Type>(rpy.x(), Eigen::Matrix<Type, 3, 1>::UnitX())
+   );
  }
  
  /** @}*/

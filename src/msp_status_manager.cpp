@@ -60,7 +60,7 @@ void MspStatusManager::initializePX4() {
    dispatcher->sendMavlinkCommand( MAV_CMD_SET_MESSAGE_INTERVAL, MAVLINK_MSG_ID_SCALED_PRESSURE, -1);
 
   // set rates for some streams
-  dispatcher->sendMavlinkCommand( MAV_CMD_SET_MESSAGE_INTERVAL, MAVLINK_MSG_ID_ATTITUDE_QUATERNION, 10000);
+  dispatcher->sendMavlinkCommand( MAV_CMD_SET_MESSAGE_INTERVAL, MAVLINK_MSG_ID_ATTITUDE, 10000);
   dispatcher->sendMavlinkCommand( MAV_CMD_SET_MESSAGE_INTERVAL, MAVLINK_MSG_ID_LOCAL_POSITION_NED, 12500);
   dispatcher->sendMavlinkCommand( MAV_CMD_SET_MESSAGE_INTERVAL, MAVLINK_MSG_ID_POSITION_TARGET_LOCAL_NED, 25000);
   dispatcher->sendMavlinkCommand( MAV_CMD_SET_MESSAGE_INTERVAL, MAVLINK_MSG_ID_ESTIMATOR_STATUS, 50000);
