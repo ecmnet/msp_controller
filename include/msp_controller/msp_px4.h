@@ -7,6 +7,7 @@
 #define MSP_COMP_OFFBOARD   25
 #define MSP_COMP_VISION     26
 #define MSP_COMP_ODOMETRY   27
+#define MSP_COMP_MAP        28
 #define MSP_COMP_AVOID      196
 #define MSP_COMP_AI         29
 
