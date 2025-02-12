@@ -50,7 +50,7 @@ void MspMavlinkDispatcher::sendMavlinkCommand(uint16_t command, float param1, fl
   mavlink_message_t msg;
   mavlink_command_long_t cmd;
 
-  cmd.target_system = PX4_SYSID;
+  cmd.target_system    = PX4_SYSID;
   cmd.target_component = MAV_COMP_ID_AUTOPILOT1;
 
   cmd.command = command;
