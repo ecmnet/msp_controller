@@ -1,11 +1,15 @@
 #pragma once
 #include <rclcpp/rclcpp.hpp>
 #include <px4_msgs/srv/vehicle_command.hpp>
+#include <px4_msgs/msg/vehicle_status.hpp>
 #include <px4_msgs/msg/log_message.hpp>
 #include <msp_msgs/msg/heartbeat.hpp>
 #include <msp_controller/msp_px4.h>
 
 
+#include "msp_controller/ros2/tf_transformer.h"
+
+using namespace wavemap;
 
 namespace msp
 {
@@ -22,10 +26,15 @@ class MSPNodeBase : public rclcpp::Node
 
 
 public:
-  explicit MSPNodeBase(std::string nodeName, uint8_t component_id) : Node(nodeName)
+  explicit MSPNodeBase(std::string nodeName, uint8_t component_id) : Node(nodeName), transformer_(std::make_shared<TfTransformer>())
   {
     this->component_id = component_id;
     auto qos = getQos();
+
+    status_subscription_ = this->create_subscription<px4_msgs::msg::VehicleStatus>(
+			"/msp/out/vehicle_status", qos,std::bind(&MSPNodeBase::onVehicleStatusReceived, this,std::placeholders::_1));
+
+
     log_message_publisher = this->create_publisher<px4_msgs::msg::LogMessage>("/msp/in/log_message", qos);
     heartbeat_publisher = this->create_publisher<msp_msgs::msg::Heartbeat>("/msp/in/heartbeat", qos);
     px4_command_client = this->create_client<px4_msgs::srv::VehicleCommand>("/px4/in/vehicle_command");
@@ -38,6 +47,12 @@ public:
 
   void setStatus(uint8_t state ) {
     this->state = state;
+  }
+
+  virtual void onVehicleStatusReceived(const px4_msgs::msg::VehicleStatus::UniquePtr msg)
+  { 
+    nav_state_ = msg->nav_state; 
+    arming_state_ = msg->arming_state;
   }
 
   virtual void receive_msp_command(const std::shared_ptr<px4_msgs::srv::VehicleCommand::Request> request,
@@ -87,11 +102,20 @@ public:
     heartbeat_publisher->publish(message);
   }
 
+protected:
+
+uint8_t nav_state_;
+uint8_t arming_state_;
+
+  std::shared_ptr<TfTransformer> transformer_;
+
 private:
   rclcpp::Service<px4_msgs::srv::VehicleCommand>::SharedPtr msp_vehicle_command;
   rclcpp::Client<px4_msgs::srv::VehicleCommand>::SharedPtr px4_command_client;
   rclcpp::Publisher<px4_msgs::msg::LogMessage>::SharedPtr log_message_publisher;
   rclcpp::Publisher<msp_msgs::msg::Heartbeat>::SharedPtr heartbeat_publisher;
+
+  rclcpp::Subscription<px4_msgs::msg::VehicleStatus>::SharedPtr status_subscription_;
 
   rclcpp::TimerBase::SharedPtr hb_timer;
 

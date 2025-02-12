@@ -17,17 +17,18 @@ public:
     subscription = this->dispatcher->getRos2Node()->create_subscription<px4_msgs::msg::ObstacleDistance>(
       "/msp/in/obstacle_distance", qos, [this](const px4_msgs::msg::ObstacleDistance::UniquePtr message)
       {
+        
         mavlink_message_t msg;
         mavlink_msg_obstacle_distance_pack(MSP_SYSID,MAV_COMPONENT::MAV_COMP_ID_ONBOARD_COMPUTER, &msg,
-               message->timestamp,
-               message->sensor_type,
+               this->dispatcher->getPX4TimeUs(),
+               MAV_DISTANCE_SENSOR_LASER,
                message->distances.data(),
-               0,
+               1,
                message->min_distance,
                message->max_distance,
                message->increment,
                message->angle_offset,
-               message->frame
+               MAV_FRAME::MAV_FRAME_BODY_FRD
                );
         
         this->dispatcher->sendMavlinkMessage(msg); 

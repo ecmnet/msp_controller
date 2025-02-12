@@ -40,6 +40,8 @@ void MspStatusManager::checkTimeOut()
   {
     RCLCPP_ERROR(dispatcher->getRos2Node()->get_logger(), "MSP lost PX4 connection");
     px4_connected = false;
+
+    
   
   }
 
