@@ -24,6 +24,7 @@
 #include <msp_controller/plugins/subscriber/msp_heartbeat_subscriber.hpp>
 #include <msp_controller/plugins/subscriber/msp_trajectory_subscriber.hpp>
 #include <msp_controller/plugins/subscriber/msp_debug_vector_subscriber.hpp>
+#include <msp_controller/plugins/subscriber/msp_micro_grid_subscriber.hpp>
 
 #include <msp_controller/plugins/tf/msp_body_frame_broadcaster.hpp>
 
@@ -65,6 +66,7 @@ private:
   msp::MspTrajectorySubscriber         s04 = msp::MspTrajectorySubscriber(&dispatcher);
   msp::MspDebugVectorSubscriber        s05 = msp::MspDebugVectorSubscriber(&dispatcher);
   msp::MspObstacleDistanceSubscriber   s06 = msp::MspObstacleDistanceSubscriber(&dispatcher);
+  msp::MspMicroGridSubscriber          s07 = msp::MspMicroGridSubscriber(&dispatcher);
 
     
 
