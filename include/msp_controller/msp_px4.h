@@ -1,4 +1,5 @@
 //#pragma once
+
 #define PX4_SYSID 1
 #define MSP_SYSID 2
 #define GCL_SYSID 255
@@ -76,6 +77,6 @@ typedef enum MSP_CMD
 {
     MSP_CMD_OFFBOARD_SETLOCALPOS=73,
     SELECT_VIDEO_STREAM = 80,
+    MSP_CMD_OFFBOARD_STOP=81,
 } MSP_CMD;
-
 #endif

@@ -40,9 +40,6 @@ void MspStatusManager::checkTimeOut()
   {
     RCLCPP_ERROR(dispatcher->getRos2Node()->get_logger(), "MSP lost PX4 connection");
     px4_connected = false;
-
-    
-  
   }
 
   if (gcl_connected && (now - gcl_connect_tms) > GCL_TIMEOUT_MS)
@@ -53,19 +50,22 @@ void MspStatusManager::checkTimeOut()
     ; //TODO: Action? Land Loiter? or leave it to PX4?
     }
   }
+  
+  dispatcher->setConnected(gcl_connected, px4_connected);
+
 }
 
 void MspStatusManager::initializePX4() {
 
   // disable some streams
-   dispatcher->sendMavlinkCommand( MAV_CMD_SET_MESSAGE_INTERVAL, MAVLINK_MSG_ID_ESC_INFO, -1);
-   dispatcher->sendMavlinkCommand( MAV_CMD_SET_MESSAGE_INTERVAL, MAVLINK_MSG_ID_SCALED_PRESSURE, -1);
+   dispatcher->sendPX4MavlinkCommand( MAV_CMD_SET_MESSAGE_INTERVAL, MAVLINK_MSG_ID_ESC_INFO, -1);
+   dispatcher->sendPX4MavlinkCommand( MAV_CMD_SET_MESSAGE_INTERVAL, MAVLINK_MSG_ID_SCALED_PRESSURE, -1);
 
   // set rates for some streams
-  dispatcher->sendMavlinkCommand( MAV_CMD_SET_MESSAGE_INTERVAL, MAVLINK_MSG_ID_ATTITUDE, 10000);
-  dispatcher->sendMavlinkCommand( MAV_CMD_SET_MESSAGE_INTERVAL, MAVLINK_MSG_ID_LOCAL_POSITION_NED, 12500);
-  dispatcher->sendMavlinkCommand( MAV_CMD_SET_MESSAGE_INTERVAL, MAVLINK_MSG_ID_POSITION_TARGET_LOCAL_NED, 25000);
-  dispatcher->sendMavlinkCommand( MAV_CMD_SET_MESSAGE_INTERVAL, MAVLINK_MSG_ID_ESTIMATOR_STATUS, 50000);
+  dispatcher->sendPX4MavlinkCommand( MAV_CMD_SET_MESSAGE_INTERVAL, MAVLINK_MSG_ID_ATTITUDE, 10000);
+  dispatcher->sendPX4MavlinkCommand( MAV_CMD_SET_MESSAGE_INTERVAL, MAVLINK_MSG_ID_LOCAL_POSITION_NED, 10000);
+  dispatcher->sendPX4MavlinkCommand( MAV_CMD_SET_MESSAGE_INTERVAL, MAVLINK_MSG_ID_POSITION_TARGET_LOCAL_NED, 25000);
+  dispatcher->sendPX4MavlinkCommand( MAV_CMD_SET_MESSAGE_INTERVAL, MAVLINK_MSG_ID_ESTIMATOR_STATUS, 50000);
 
   RCLCPP_INFO(dispatcher->getRos2Node()->get_logger(), "PX4 setup performed");
 

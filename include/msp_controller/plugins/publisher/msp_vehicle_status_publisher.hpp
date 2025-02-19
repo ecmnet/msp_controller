@@ -74,6 +74,8 @@ namespace msp
       else
         message.armed_time = 0;
 
+      message.set__gcs_connection_lost(!dispatcher_->isGCLConnected());
+
       message.component_id = msg.compid;
       message.system_id = msg.sysid;
 

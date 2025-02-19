@@ -34,7 +34,7 @@ public:
 
   void start();
   bool sendMavlinkMessage(mavlink_message_t& msg);
-  void sendMavlinkCommand(uint16_t command, float param1=0, float param2=0, float param3=0, float param4=0, float param5=0, float param6=0, float param7=0);
+  void sendPX4MavlinkCommand(uint16_t command, float param1=0, float param2=0, float param3=0, float param4=0, float param5=0, float param6=0, float param7=0);
   void addListener(uint16_t msgid, MavlinkMessageListener* listener);
   void removeListener(uint16_t msgid, MavlinkMessageListener* listener);
   uint64_t getPX4TimeUs();
@@ -46,6 +46,15 @@ public:
 
   inline rclcpp::Node* getRos2Node() {
     return ros2Node;
+  }
+
+  inline void setConnected(bool gcl, bool px4) {
+    gcl_connected = gcl;
+    px4_connected = px4;
+  }
+
+  inline bool isGCLConnected() {
+    return gcl_connected;
   }
 
   inline double getYawFromQuaternion(double q_x, double q_y, double q_z, double q_w) {
@@ -72,6 +81,9 @@ private:
 
   uint8_t  msp_state = MAV_STATE_ACTIVE;
   double   time_offset = 0;
+
+  bool gcl_connected = false;
+  bool px4_connected = false;
 
 
   rclcpp::Service<px4_msgs::srv::VehicleCommand>::SharedPtr px4_vehicle_command;

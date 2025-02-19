@@ -44,8 +44,8 @@ bool MspMavlinkDispatcher::sendMavlinkMessage(mavlink_message_t &msg)
 }
 
 
-void MspMavlinkDispatcher::sendMavlinkCommand(uint16_t command, float param1, float param2, float param3, float param4,
-                                              float param5, float param6, float param7)
+void MspMavlinkDispatcher::sendPX4MavlinkCommand(uint16_t command, float param1, float param2, float param3, float param4,
+                                                 float param5, float param6, float param7)
 {
   mavlink_message_t msg;
   mavlink_command_long_t cmd;
@@ -66,15 +66,18 @@ void MspMavlinkDispatcher::sendMavlinkCommand(uint16_t command, float param1, fl
   this->sendMavlinkMessage(msg);
 }
 
+
 void MspMavlinkDispatcher::handle_px4_command(const std::shared_ptr<px4_msgs::srv::VehicleCommand::Request> request,
                                               std::shared_ptr<px4_msgs::srv::VehicleCommand::Response> response)
 {
-  if (request->request.target_component != MAV_COMP_ID_AUTOPILOT1)
-    return;
+  if (request->request.target_component == MAV_COMP_ID_AUTOPILOT1) {
 
-  sendMavlinkCommand(request->request.command, request->request.param1, request->request.param2,
+  sendPX4MavlinkCommand(request->request.command, request->request.param1, request->request.param2,
                      request->request.param3, request->request.param4, request->request.param5, request->request.param6,
                      request->request.param7);
+
+  }
+
 }
 
 void MspMavlinkDispatcher::start_receive()
@@ -155,3 +158,4 @@ uint64_t MspMavlinkDispatcher::getRos2TimeMs()
 {
   return (uint64_t)ros2Node->get_clock()->now().nanoseconds() / 1000000ULL;
 }
+
