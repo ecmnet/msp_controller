@@ -36,16 +36,12 @@ namespace msp
       message.vy = ned.vy;
       message.vz = ned.vz;
 
-      // if(last_message.timestamp_sample == 0) {
       message.ax = 0;
       message.ay = 0;
       message.az = 0;
-      // } else {
-      //   float delta_s = ( ned.time_boot_ms - last_message.timestamp_sample ) / 1000.0f;
-      //   message.ax = (message.vx - last_message.vx) / delta_s;
-      //   message.ay = (message.vy - last_message.vy) / delta_s;
-      //   message.az = (message.vz - last_message.vz) / delta_s;
-      // }
+      
+      message.heading     = MavlinkMessageListener::model.rpy.z();
+      message.heading_var = MavlinkMessageListener::model.yaw_speed;
 
       message.xy_valid = true;
       message.z_valid = true;

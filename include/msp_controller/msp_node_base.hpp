@@ -105,7 +105,12 @@ namespace msp
       std::copy_n(msg.begin(), std::min(msg.size(), message.text.size()), message.text.begin());
       message.set__severity(severity);
       log_message_publisher->publish(message);
-      RCLCPP_INFO(this->get_logger(), "%s", msg.c_str());
+      if(severity < 4)
+        RCLCPP_ERROR(this->get_logger(), "%s", msg.c_str());
+      else if(severity == 4 )
+        RCLCPP_WARN(this->get_logger(), "%s", msg.c_str());
+      else
+        RCLCPP_INFO(this->get_logger(), "%s", msg.c_str());
     }
 
     virtual rclcpp::QoS getQos()
