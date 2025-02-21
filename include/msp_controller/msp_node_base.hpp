@@ -56,6 +56,7 @@ namespace msp
         onArmingState(msg->arming_state);
       arming_state_ = msg->arming_state;
 
+      armed_time_ = msg->armed_time;
       gcl_connected_ = !msg->gcs_connection_lost;
     }
 
@@ -129,8 +130,9 @@ namespace msp
   protected:
 
     bool gcl_connected_ = false;
-    uint8_t nav_state_;
-    uint8_t arming_state_;
+    uint64_t armed_time_;
+    uint8_t  nav_state_;
+    uint8_t  arming_state_;
 
     std::shared_ptr<TfTransformer> transformer_;
 

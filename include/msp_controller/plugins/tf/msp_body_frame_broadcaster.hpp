@@ -67,7 +67,8 @@ namespace msp
       // mavlink_msg_attitude_quaternion_decode(&msg, &att);
 
       mavlink_attitude_t att;
-    mavlink_msg_attitude_decode(&msg, &att);
+      mavlink_msg_attitude_decode(&msg, &att);
+      MavlinkMessageListener::model.attitude = att;
 
       geometry_msgs::msg::TransformStamped transform;
 

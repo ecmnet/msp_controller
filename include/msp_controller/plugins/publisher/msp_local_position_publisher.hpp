@@ -25,6 +25,7 @@ namespace msp
     {
       mavlink_local_position_ned_t ned;
       mavlink_msg_local_position_ned_decode(&msg, &ned);
+      MavlinkMessageListener::model.local_position = ned;
 
       auto message = px4_msgs::msg::VehicleLocalPosition();
 
@@ -42,6 +43,8 @@ namespace msp
       
       message.heading     = MavlinkMessageListener::model.rpy.z();
       message.heading_var = MavlinkMessageListener::model.yaw_speed;
+
+      message.dist_bottom = MavlinkMessageListener::model.global_position.relative_alt / 1000.0f;
 
       message.xy_valid = true;
       message.z_valid = true;

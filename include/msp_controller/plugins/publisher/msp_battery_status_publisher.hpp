@@ -24,6 +24,7 @@ public:
   {
     mavlink_battery_status_t bat;
     mavlink_msg_battery_status_decode(&msg, &bat);
+    MavlinkMessageListener::model.battery_status = bat;
 
     auto message = px4_msgs::msg::BatteryStatus();
 
