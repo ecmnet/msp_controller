@@ -39,7 +39,6 @@ bool MspMavlinkDispatcher::sendMavlinkMessage(mavlink_message_t &msg)
     RCLCPP_ERROR(ros2Node->get_logger(), "Failed to send MAVLink message: %s", ec.message().c_str());
     return false;
   }
-
   return true;
 }
 

@@ -82,13 +82,12 @@ namespace msp
       px4_publisher->publish(message);
     }
 
-  private:
     rclcpp::Publisher<px4_msgs::msg::VehicleStatus>::SharedPtr px4_publisher;
     rclcpp::Node *ros2Node;
     msp::MspMavlinkDispatcher *dispatcher_;
 
     uint64_t time_armed = 0;
-
+    
     inline bool isMode(uint64_t custom, uint16_t mode_auto, uint16_t mode = 0)
     {
       custom = custom & 0xFFFFFFFF;

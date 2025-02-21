@@ -47,37 +47,33 @@ namespace msp
 
     virtual void onVehicleStatusReceived(const px4_msgs::msg::VehicleStatus::UniquePtr msg)
     {
-      
-      if(nav_state_ != msg->nav_state)
-        onNavState(msg->nav_state);
-      nav_state_     = msg->nav_state;
 
-      if(arming_state_ != msg->arming_state)
+      if (nav_state_ != msg->nav_state)
+        onNavState(msg->nav_state);
+      nav_state_ = msg->nav_state;
+
+      if (arming_state_ != msg->arming_state)
         onArmingState(msg->arming_state);
-      arming_state_  = msg->arming_state;
+      arming_state_ = msg->arming_state;
 
       gcl_connected_ = !msg->gcs_connection_lost;
-
     }
 
     virtual void receive_msp_command(const std::shared_ptr<px4_msgs::srv::VehicleCommand::Request> request,
                                      std::shared_ptr<px4_msgs::srv::VehicleCommand::Response> response) {};
 
-    virtual void send_px4_vehicle_command(const uint16_t command, 
-                                            // const float param1 = std::numeric_limits<float>::quiet_NaN(), 
-                                            // const float param2 = std::numeric_limits<float>::quiet_NaN(),
-                                            // const float param3 = std::numeric_limits<float>::quiet_NaN(), 
-                                            // const float param4 = std::numeric_limits<float>::quiet_NaN(), 
-                                            // const float param5 = std::numeric_limits<float>::quiet_NaN(),
-                                            // const float param6 = std::numeric_limits<float>::quiet_NaN(), 
-                                            // const float param7 = std::numeric_limits<float>::quiet_NaN())
+    virtual void send_px4_vehicle_command(const uint16_t command,
+                                          // const float param1 = std::numeric_limits<float>::quiet_NaN(),
+                                          // const float param2 = std::numeric_limits<float>::quiet_NaN(),
+                                          // const float param3 = std::numeric_limits<float>::quiet_NaN(),
+                                          // const float param4 = std::numeric_limits<float>::quiet_NaN(),
+                                          // const float param5 = std::numeric_limits<float>::quiet_NaN(),
+                                          // const float param6 = std::numeric_limits<float>::quiet_NaN(),
+                                          // const float param7 = std::numeric_limits<float>::quiet_NaN())
 
-                                             const float param1 = 0, const float param2 = 0, const float param3 = 0, 
-                                             const float param4 = 0, const float param5 = 0, const float param6 = 0, 
-                                             const float param7 = 0
-                                            )
-
-
+                                          const float param1 = 0, const float param2 = 0, const float param3 = 0,
+                                          const float param4 = 0, const float param5 = 0, const float param6 = 0,
+                                          const float param7 = 0)
 
     {
       auto request = std::make_shared<px4_msgs::srv::VehicleCommand::Request>();
@@ -105,9 +101,9 @@ namespace msp
       std::copy_n(msg.begin(), std::min(msg.size(), message.text.size()), message.text.begin());
       message.set__severity(severity);
       log_message_publisher->publish(message);
-      if(severity < 4)
+      if (severity < 4)
         RCLCPP_ERROR(this->get_logger(), "%s", msg.c_str());
-      else if(severity == 4 )
+      else if (severity == 4)
         RCLCPP_WARN(this->get_logger(), "%s", msg.c_str());
       else
         RCLCPP_INFO(this->get_logger(), "%s", msg.c_str());
@@ -116,7 +112,7 @@ namespace msp
     virtual rclcpp::QoS getQos()
     {
       rmw_qos_profile_t qos_profile = rmw_qos_profile_sensor_data;
-      return rclcpp::QoS(rclcpp::QoSInitialization(qos_profile.history,3), qos_profile);
+      return rclcpp::QoS(rclcpp::QoSInitialization(qos_profile.history, 3), qos_profile);
     }
 
     void send_heartbeat()
@@ -131,22 +127,23 @@ namespace msp
     }
 
   protected:
+
+    bool gcl_connected_ = false;
     uint8_t nav_state_;
     uint8_t arming_state_;
 
-    bool gcl_connected_ = false;
-
     std::shared_ptr<TfTransformer> transformer_;
 
-    virtual void onArmingState(uint8_t arming_state) {
-
+    virtual void onArmingState(uint8_t arming_state)
+    {
     }
 
-    virtual void onNavState(uint8_t nav_state) {
-
+    virtual void onNavState(uint8_t nav_state)
+    {
     }
 
   private:
+
     rclcpp::Service<px4_msgs::srv::VehicleCommand>::SharedPtr msp_vehicle_command;
     rclcpp::Client<px4_msgs::srv::VehicleCommand>::SharedPtr px4_command_client;
     rclcpp::Publisher<px4_msgs::msg::LogMessage>::SharedPtr log_message_publisher;
