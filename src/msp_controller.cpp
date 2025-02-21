@@ -16,6 +16,7 @@
 #include <msp_controller/plugins/publisher/msp_vehicle_status_publisher.hpp>
 #include <msp_controller/plugins/publisher/msp_battery_status_publisher.hpp>
 #include <msp_controller/plugins/publisher/msp_sensor_combined_publisher.hpp>
+#include <msp_controller/plugins/publisher/msp_message_publisher.hpp>
 
 #include <msp_controller/plugins/services/msp_msp_command_client.hpp>
 
@@ -59,6 +60,7 @@ private:
   msp::MspTargetLocalPositionPublisher p05 = msp::MspTargetLocalPositionPublisher(this,&dispatcher);
   msp::MspSensorCombinedPublisher      p06 = msp::MspSensorCombinedPublisher(this,&dispatcher);
   msp::MspGlobalPositionPublisher      p07 = msp::MspGlobalPositionPublisher(this,&dispatcher);
+  msp::MspMessagePublisher             p08 = msp::MspMessagePublisher(this,&dispatcher);
 
   msp::MspMspCommandClient             c01 = msp::MspMspCommandClient(this,&dispatcher);
 
