@@ -30,7 +30,8 @@ public:
     auto message = px4_msgs::msg::LogMessage();
     message.timestamp = ros2Node->get_clock()->now().nanoseconds() / 1000L;
     message.severity = mes.severity;
-    std::memcpy(message.text.data(), mes.text, std::min(std::strlen(mes.text)-1, message.text.size()));
+    std::string text = "[px4] "+ std::string(reinterpret_cast<const char*>(mes.text));
+    std::memcpy(message.text.data(), text.data(), std::min(std::strlen(text.data())-1, message.text.size()));
     
     px4_publisher->publish(message);
 
